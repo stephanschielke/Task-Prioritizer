@@ -8,6 +8,8 @@ It also gives you advice what to do with your tasks.
 Needs Python 3.4 or Python 2.7 with an backported [Enum package](https://pypi.python.org/pypi/enum34#downloads).
 
 # Usage
+Use this online version of it: [repl.it](https://repl.it/CZ6T/0).
+
 `python 3Dpriority.py` 
 
 starts the script.
