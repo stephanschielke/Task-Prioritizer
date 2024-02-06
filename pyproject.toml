@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "task-prioritizer"
+version = "1.0.0"
+description = "Calculates a task priority by its urgency, impact and effort."
+authors = ["Stephan Schielke"]
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = "^3.12"
+black = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
