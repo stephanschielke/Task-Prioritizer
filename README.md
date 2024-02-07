@@ -12,7 +12,32 @@ poetry install
 poetry run python src/main.py
 ```
 
-starts the script.
+## Examples
+```
+Calculate a new task priority
+
+Urgency: 3
+Impact : 2
+Effort : 1
+
+==============================
+The priority of the task is: 4
+==============================
+You should make a plan for it.
+```
+
+```
+Calculate a new task priority
+
+Urgency: 1
+Impact : 2
+Effort : 3
+
+==============================
+The priority of the task is: 4
+==============================
+You should bring it to an end.
+```
 
 # Guide
 
