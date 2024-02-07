@@ -106,9 +106,13 @@ def print_priority(priority: int) -> None:
 
 def get_suggestions(urgency: Value, impact: Value, effort: Value) -> List[str]:
     return [
-        effort_vs_impact[effort][impact],
-        impact_vs_urgency[urgency][impact],
-        urgency_vs_effort[urgency][effort],
+        suggestion
+        for suggestion in [
+            effort_vs_impact[effort][impact],
+            impact_vs_urgency[urgency][impact],
+            urgency_vs_effort[urgency][effort],
+        ]
+        if suggestion is not ""
     ]
 
 

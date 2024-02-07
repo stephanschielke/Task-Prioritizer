@@ -25,7 +25,7 @@ class Test3dPriority:
             "You should better hurry up!",
         ]
 
-        assert get_suggestions(urgency=Value.MEDIUM, impact=Value.MEDIUM, effort=Value.MEDIUM) == ["", "", ""]
+        assert get_suggestions(urgency=Value.MEDIUM, impact=Value.MEDIUM, effort=Value.MEDIUM) == []
 
         assert get_suggestions(urgency=Value.LOW, impact=Value.LOW, effort=Value.LOW) == [
             "It is a fill in task.",
