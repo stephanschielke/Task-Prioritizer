@@ -11,6 +11,12 @@ python = "^3.12"
 black = "*"
 numpy = "*"
 
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
