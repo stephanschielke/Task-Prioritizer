@@ -5,16 +5,12 @@ Calculates a task priority by its urgency, impact and effort.
 
 It also gives you advice what to do with your tasks.
 
-# Requirements
-
-Python 3.12
-Black Formatter
-
 # Usage
 
-Use this online version of it: [repl.it](https://repl.it/CZ6T/0).
-
-`python 3Dpriority.py`
+```
+poetry install
+poetry run python src/main.py
+```
 
 starts the script.
 
