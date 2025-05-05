@@ -1,139 +1,142 @@
 from enum import IntEnum
-from typing import Tuple, List
-
-import numpy as np
+import argparse
 
 
 class Value(IntEnum):
+    """
+    Priority levels (internal 0-based):
+      0 = HIGH
+      1 = MEDIUM
+      2 = LOW
+    """
     HIGH = 0
     MEDIUM = 1
     LOW = 2
 
+# Suggestion mappings tuned for everyday tasks and ADHD-friendly actions
+_effort_vs_impact: dict[Value, dict[Value, str]] = {
+    Value.HIGH: {
+        Value.HIGH: "Tackle with a dedicated session",
+        Value.MEDIUM: "Break into smaller steps",
+        Value.LOW: "Postpone or delegate"
+    },
+    Value.MEDIUM: {
+        Value.HIGH: "Allocate a focused time block",
+        Value.MEDIUM: "Plan for today",
+        Value.LOW: "Do when convenient"
+    },
+    Value.LOW: {
+        Value.HIGH: "Quick win—handle now",
+        Value.MEDIUM: "Fit into next free slot",
+        Value.LOW: "Skip or batch later"
+    }
+}
 
-DEPTH = len(Value)
+_impact_vs_urgency: dict[Value, dict[Value, str]] = {
+    Value.HIGH: {
+        Value.HIGH: "Do immediately",
+        Value.MEDIUM: "Schedule for today",
+        Value.LOW: "Plan by week's end"
+    },
+    Value.MEDIUM: {
+        Value.HIGH: "Set a quick reminder",
+        Value.MEDIUM: "Do in the next couple days",
+        Value.LOW: "Add to to-do list"
+    },
+    Value.LOW: {
+        Value.HIGH: "Delegate or drop",
+        Value.MEDIUM: "Tackle during downtime",
+        Value.LOW: "Ignore or archive"
+    }
+}
 
-# Advice for this task:
-effort_vs_impact = np.full((DEPTH, DEPTH), "", dtype=object)
-effort_vs_impact[Value.HIGH][Value.HIGH] = "It is a major project."
-effort_vs_impact[Value.HIGH][Value.LOW] = "It is a thankless task."
-effort_vs_impact[Value.LOW][Value.HIGH] = "It is a quick rewarding task."
-effort_vs_impact[Value.LOW][Value.LOW] = "It is a fill in task."
+_urgency_vs_effort: dict[Value, dict[Value, str]] = {
+    Value.HIGH: {
+        Value.HIGH: "Block out a free afternoon",
+        Value.MEDIUM: "Carve out a 30-minute slot",
+        Value.LOW: "Handle right away"
+    },
+    Value.MEDIUM: {
+        Value.HIGH: "Plan a tomorrow time slot",
+        Value.MEDIUM: "Schedule in your planner",
+        Value.LOW: "Do when you get a minute"
+    },
+    Value.LOW: {
+        Value.HIGH: "Plan for next week",
+        Value.MEDIUM: "Slot into calendar",
+        Value.LOW: "Do whenever"
+    }
+}
 
-impact_vs_urgency = np.full((DEPTH, DEPTH), "", dtype=object)
-impact_vs_urgency[Value.HIGH][Value.HIGH] = "Do it now!"
-impact_vs_urgency[Value.HIGH][Value.LOW] = "Decide when to do it!"
-impact_vs_urgency[Value.LOW][Value.HIGH] = "Delegate it away!"
-impact_vs_urgency[Value.LOW][Value.LOW] = "Delete it!"
-
-urgency_vs_effort = np.full((DEPTH, DEPTH), "", dtype=object)
-urgency_vs_effort[Value.HIGH][Value.HIGH] = "You should better hurry up!"
-urgency_vs_effort[Value.HIGH][Value.LOW] = "You should bring it to an end."
-urgency_vs_effort[Value.LOW][Value.HIGH] = "You should make a plan for it."
-urgency_vs_effort[Value.LOW][Value.LOW] = "You can delay it."
-
-
-def print_guideline() -> None:
-    print(
-        """
-    ===========================================================================
-                                     GUIDELINE                               
-    ===========================================================================
-    URGENCY:
-    If the deadline is today the URGENCY should be HIGH (3).
-    If the deadline is this week the URGENCY should be MEDIUM (2).
-    If the deadline is further away the URGENCY should be LOW (1).
-    
-    IMPACT:
-    If the task really changes things the IMPACT should be HIGH (3).
-    If it is a routine task or nothing special the IMPACT should be NORMAL (2).
-    For trivial tasks the IMPACT should be LOW (1).
-    
-    EFFORT:
-    If the estimated time is higher than 40h, EFFORT should be HIGH (3).
-    If the estimated time is around a day, EFFORT should be MEDIUM (2).
-    If the estimated time lower than a day, EFFORT should be LOW (1).
+def print_mapping() -> None:
     """
-    )
-
-
-def print_allowed_values():
-    print("Allowed input values:")
-    for i in range(0, DEPTH):
-        # Convert from 0-based machine-readable indexes to 1-based human-readable values
-        print("{0} = {1}".format(i + 1, Value(i).name))
-    print("")
-
-
-def read_priorities() -> Tuple[Value, Value, Value]:
-    print("Calculate a new task priority")
-    print()
-    # Convert from 1-based human-readable values to 0-based machine-readable indexes
-    urgency = Value(int(input("Urgency: ")) - 1)
-    impact = Value(int(input("Impact : ")) - 1)
-    effort = Value(int(input("Effort : ")) - 1)
-    return urgency, impact, effort
+    Show valid input range and meaning.
+    """
+    print("Enter values 1-3 for each prompt: 1=HIGH, 2=MEDIUM, 3=LOW.\n")
 
 
 def calc_priority(urgency: Value, impact: Value, effort: Value) -> int:
     """
-    The priority is the sum of the indexes + 1
-    The further it is from its optimum(0,0,0), the lower is its priority.
-    The scale goes from 1 to 7 (but actually from 0 to 6).
-    (0,0,0) has prio = 0 + 0 + 0 (+ 1) = 1
-    (1,1,1) has prio = 1 + 1 + 1 (+ 1) = 4
-    (2,2,2) has prio = 2 + 2 + 2 (+ 1) = 7
-       :param urgency: The urgency of the task
-       :param impact: The impact of the task
-       :param effort: The effort of the task
-       :return: A single priority ranging from 1 (Highest) to 7 (Lowest)
+    Compute priority: sum of values + 1 ⇒ range 1–7.
     """
-    # Fake index on our "3x3x3 matrix"
-    multi_index = [(urgency, impact, effort)]
-    # Dimensions of our flattened "3x3x3 matrix"
-    dimensions = pow(DEPTH, DEPTH)
-    # Index array of our flattened "3x3x3 matrix" to flat indices
-    priority = np.ravel_multi_index(multi_index, dims=dimensions, mode="raise")
-    # Sum up the list of indices and convert from 0-based index to human-readable priority
-    return sum(priority) + 1
+    return urgency + impact + effort + 1
 
 
-def print_priority(priority: int) -> None:
-    print()
-    print("==============================")
-    print("The priority of the task is: {0}".format(priority))
-    print("==============================")
-
-
-def get_suggestions(urgency: Value, impact: Value, effort: Value) -> List[str]:
+def get_suggestions(urgency: Value, impact: Value, effort: Value) -> list[str]:
+    """
+    Return suggestions based on pairwise comparisons.
+    """
     return [
-        suggestion
-        for suggestion in [
-            effort_vs_impact[effort][impact],
-            impact_vs_urgency[urgency][impact],
-            urgency_vs_effort[urgency][effort],
-        ]
-        if suggestion is not ""
+        _effort_vs_impact[effort][impact],
+        _impact_vs_urgency[impact][urgency],
+        _urgency_vs_effort[urgency][effort],
     ]
 
 
-def print_suggestions(urgency: Value, impact: Value, effort: Value):
-    print(" ".join(get_suggestions(urgency, impact, effort)))
+def prompt_once() -> None:
+    """
+    Single round: read inputs, compute and display results.
+    """
+    try:
+        u = Value(int(input("Urgency (1-3): ")) - 1)
+        i = Value(int(input("Impact  (1-3): ")) - 1)
+        e = Value(int(input("Effort  (1-3): ")) - 1)
+    except (ValueError, KeyError):
+        print("Invalid input; please enter 1, 2, or 3.\n")
+        return
+
+    score = calc_priority(u, i, e)
+    suggestions = get_suggestions(u, i, e)
+
+    print(f"\nPriority score: {score}\n")
+    print("Suggestions:")
+    for s in suggestions:
+        print(f"- {s}")
 
 
-def main():
-    print_guideline()
-    print_allowed_values()
-    while True:
-        try:
-            urgency, impact, effort = read_priorities()
-            priority = calc_priority(urgency, impact, effort)
+def interactive_loop() -> None:
+    """
+    Continuously prompt until user stops (Ctrl+C).
+    """
+    try:
+        while True:
+            prompt_once()
+            print()  # blank line between rounds
+    except KeyboardInterrupt:
+        print("\nExiting interactive mode.")
 
-            print_priority(priority)
-            print_suggestions(urgency, impact, effort)
-        except ValueError:
-            print("Invalid entered task priority. Please try again.")
-        finally:
-            print()
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Task priority calculator")
+    parser.add_argument('-o', '--once', action='store_true',
+                        help='run a single round and exit')
+    args = parser.parse_args()
+
+    print_mapping()
+    if args.once:
+        prompt_once()
+    else:
+        interactive_loop()
 
 
 if __name__ == "__main__":
