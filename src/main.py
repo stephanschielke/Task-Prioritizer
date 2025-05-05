@@ -26,7 +26,7 @@ _effort_vs_impact: dict[Value, dict[Value, str]] = {
         Value.LOW: "📆 Do when convenient"
     },
     Value.LOW: {
-        Value.HIGH: "⚡ Quick win—handle now",
+        Value.HIGH: "⚡ Quick win — handle now",
         Value.MEDIUM: "🧩 Fit into next free slot",
         Value.LOW: "🗂️ Skip or batch later"
     }

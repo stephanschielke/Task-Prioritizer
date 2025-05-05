@@ -1,69 +1,86 @@
-# Task-Prioritizer
+# 🧐 Task Prioritizer
 
-Give your tasks a fixed priority with this tool.
-Calculates a task priority by its urgency, impact and effort.
+A helpful little tool for organizing your tasks by **urgency**, **impact**, and **effort**—especially useful if you struggle with planning or prioritizing (hello ADHD brain 👋).
 
-It also gives you advice what to do with your tasks.
+It assigns a **priority score** (1–7) and gives actionable, emoji-enhanced suggestions to help you decide what to do next.
 
-# Usage
+---
 
-```
+## 📦 Installation
+
+```bash
 poetry install
+```
+
+---
+
+## 🚀 Usage
+
+### Interactive Mode (Default)
+
+```bash
 poetry run python src/main.py
 ```
 
-## Examples
-```
-Calculate a new task priority
-
-Urgency: 3
-Impact : 2
-Effort : 1
-
-==============================
-The priority of the task is: 4
-==============================
-You should make a plan for it.
-```
+You'll be asked for urgency, impact, and effort:
 
 ```
-Calculate a new task priority
+Enter values 1-3 for each prompt: 1=HIGH, 2=MEDIUM, 3=LOW.
 
-Urgency: 1
-Impact : 2
-Effort : 3
+Urgency (1-3): 2
+Impact  (1-3): 2
+Effort  (1-3): 2
 
-==============================
-The priority of the task is: 4
-==============================
-You should bring it to an end.
+Priority score: 4
+
+Suggestions:
+- 📝 Plan for today
+- 📋 Do in the next couple days
+- 📓 Schedule in your planner
 ```
 
-# Guide
+This repeats until you exit (Ctrl+C).
 
-There are three factors that determine the priority of your task:
-URGENCY, IMPACT and EFFORT.
+---
 
-## URGENCY
+### One-Time Execution with CLI Flags
 
-If the deadline is today, the URGENCY should be HIGH.
+```bash
+poetry run python src/main.py --once --urgency 1 --impact 3 --effort 2
+```
 
-If the deadline is this week, the URGENCY should be MEDIUM.
+Outputs a single result and exits—great for scripts or integrations.
 
-If the deadline is further away, the URGENCY should be LOW.
+---
 
-## IMPACT
+## 🧽 Priority Factors
 
-If the task really changes things, the IMPACT should be HIGH.
+For each task, rate the following:
 
-If it is a routine task or nothing special, the IMPACT should be NORMAL.
+### URGENCY (1–3)
 
-For trivial tasks, the IMPACT should be LOW.
+- `1` = HIGH → Deadline is today
+- `2` = MEDIUM → Due this week
+- `3` = LOW → No rush
 
-## EFFORT
+### IMPACT (1–3)
 
-If the estimated time is higher than 40h, EFFORT should be HIGH.
+- `1` = HIGH → Big change or progress
+- `2` = MEDIUM → Routine or moderate impact
+- `3` = LOW → Trivial or minor result
 
-If the estimated time is around a day, EFFORT should be MEDIUM.
+### EFFORT (1–3)
 
-If the estimated time is lower than a day, EFFORT should be LOW.
+- `1` = HIGH → >1 full day of work
+- `2` = MEDIUM → A few hours
+- `3` = LOW → <1 hour or quick task
+
+---
+
+## 📌 Why Use This?
+
+✅ Prevent overwhelm  
+✅ Focus on what truly matters  
+✅ Get tailored nudges toward action
+
+Whether you're planning a big project or just trying to clean your apartment, this tool helps you **decide what to do next** with clarity and ease.
